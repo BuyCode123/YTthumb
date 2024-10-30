@@ -32,6 +32,10 @@ body{
 	background-color: #131a27;
 	width: 800px;
 	height: 600px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 h1{
 	font-family: "Bold";
