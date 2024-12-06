@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Image & Text Editor</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: auto;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+        }
+
+        #editorCanvas {
+            border: 1px solid black;
+            background-color: #000;
+            width: 100%;
+            height: auto;
+        }
+
+        input[type="file"], input[type="text"], input[type="color"], input[type="range"] {
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        .image-list {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 400px;
+            padding: 10px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .image-list div {
+            position: relative;
+            text-align: center;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .image-list img, .image-list canvas {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-right: 10px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            border: 1px solid black;
+        }
+
+        .coordinate-inputs {
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+
+        .coordinate-inputs label, .coordinate-inputs input {
+            margin: 5px;
+            padding: 5px;
+        }
+
+        .clear-all-btn, .add-text-btn, .export-btn, .done-btn{
+            margin: 10px;
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .clear-all-btn { background-color: red; }
+        .clear-all-btn:hover { background-color: darkred; }
+
+.done-btn { background-color: green; }
+        .done-btn:hover { background-color: darkgreen; }
+
+
+        .add-text-btn { background-color: orange; }
+        .add-text-btn:hover { background-color: darkorange; }
+
+        .export-btn { background-color: blue; }
+        .export-btn:hover { background-color: darkblue; }
+
+        .delete-btn {
+            cursor: pointer;
+            color: white;
+            background-color: red;
+            padding: 5px 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+        }
+#txtHex{
+display: none;
+}
+
+        .delete-btn:hover { background-color: darkred; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="file" id="imageUpload" accept="image/*">
+
+        <input type="text" id="textInput" placeholder="Add your text here">
+        <button class="add-text-btn" id="addTextBtn">Add Text</button>
+        <canvas id="editorCanvas" width="1920px" height="1080px"></canvas>
+    </div>
+    
+    <div class="image-list" id="imageList"></div>
+
+    <div class="coordinate-inputs" id="coordinateInputs">
+        <label for="xPos">X: </label><input type="range" id="xPos" min="-25" max="125" value="50">
+        <label for="yPos">Y: </label><input type="range" id="yPos" min="-25" max="125" value="50">
+        <label for="scale">Scale: </label><input type="range" id="scale" min="1" max="1000" value="100">
+        <label for="rotation">Rotation: </label><input type="range" id="rotation" min="-360" max="360" value="0">
+        <label for="opacity">Opacity: </label><input type="range" id="opacity" min="0" max="100" value="100">
+<label for="txtHex">Color: </label><input type="#ff0000" id="txtHex" placeholder="#ff0000" maxlength="7">
+
+    <button class="done-btn" id="doneBtn">Done</button>
+    </div>
+
+    <button class="clear-all-btn" id="clearAllBtn">Clear All</button>
+    <button class="export-btn" id="exportBtn">Export Image</button>
+
+    <script>
+        const canvas = document.getElementById("editorCanvas");
+        const ctx = canvas.getContext("2d");
+        const imageUpload = document.getElementById("imageUpload");
+        const textInput = document.getElementById("textInput");
+        const opacitySlider = document.getElementById("opacity");
+        const addTextBtn = document.getElementById("addTextBtn");
+        const imageListContainer = document.getElementById("imageList");
+        const xPosInput = document.getElementById("xPos");
+        const yPosInput = document.getElementById("yPos");
+        const scaleInput = document.getElementById("scale");
+        const rotationInput = document.getElementById("rotation");
+        const clearAllBtn = document.getElementById("clearAllBtn");
+        const exportBtn = document.getElementById("exportBtn");
+        const hexInput = document.getElementById("txtHex");
+ const doneBtn = document.getElementById("doneBtn");
+
+        let elements = [];
+        let selectedElementIndex = null;
+
+        imageUpload.addEventListener("change", handleImageUpload);
+        addTextBtn.addEventListener("click", handleAddText);
+        xPosInput.addEventListener("input", updateElementPosition);
+        yPosInput.addEventListener("input", updateElementPosition);
+        scaleInput.addEventListener("input", updateElementScale);
+        rotationInput.addEventListener("input", updateElementRotation);
+        opacitySlider.addEventListener("input", updateElementOpacity);
+        clearAllBtn.addEventListener("click", clearAllElements);
+        exportBtn.addEventListener("click", exportCanvas);
+hexInput.addEventListener("input", updateElementColor);
+doneBtn.addEventListener("click", closeEditor);
+
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    elements.push({ type: "image", img, x: canvas.width / 2, y: canvas.height / 2, scale: 100, rotation: 0, opacity: 100 });
+                    updateImageList();
+                    drawCanvas();
+                };
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // Handle adding text
+        function handleAddText() {
+            const text = textInput.value.trim();
+            if (!text) return;
+
+            elements.push({ type: "text", text, x: canvas.width / 2, y: canvas.height / 2, scale: 100, rotation: 0, color: "#ffffff", opacity: 100 });
+            textInput.value = "";
+            updateImageList();
+            drawCanvas();
+        }
+
+        // Update the image list
+        function updateImageList() {
+            imageListContainer.innerHTML = '';
+
+            elements.forEach((element, index) => {
+                const container = document.createElement("div");
+
+                if (element.type === "image") {
+                    const img = document.createElement("img");
+                    img.src = element.img.src;
+                    img.onclick = () => selectElement(index);
+                    container.appendChild(img);
+                } else if (element.type === "text") {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = 100;
+                    canvas.height = 100;  // Ensure square canvas for text preview
+                    const ctx = canvas.getContext("2d");
+
+                    ctx.font = `${50}px Arial`;
+                    ctx.fillStyle = element.color;
+                    ctx.globalAlpha = element.opacity / 100;  // Apply opacity
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(element.text, canvas.width / 2, canvas.height / 2);
+                    canvas.onclick = () => selectElement(index);
+                    container.appendChild(canvas);
+                }
+
+                const deleteBtn = document.createElement("span");
+                deleteBtn.textContent = "Delete";
+                deleteBtn.classList.add("delete-btn");
+                deleteBtn.onclick = () => deleteElement(index);
+                container.appendChild(deleteBtn);
+
+                imageListContainer.appendChild(container);
+            });
+        }
+
+        // Draw the canvas
+        function drawCanvas() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+ctx.fillStyle = "rgba(0, 0, 0, 1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+            elements.forEach((element) => {
+                ctx.save();
+                ctx.translate(element.x, element.y);
+                ctx.rotate((element.rotation * Math.PI) / 180);
+                ctx.globalAlpha = element.opacity / 100;  // Apply opacity
+
+                if (element.type === "image") {
+                    const imgWidth = element.img.width * (element.scale / 100);
+                    const imgHeight = element.img.height * (element.scale / 100);
+                    ctx.drawImage(element.img, -imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
+                } else if (element.type === "text") {
+                    ctx.font = `${element.scale}px Arial`;
+                    ctx.fillStyle = element.color;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(element.text, 0, 0);  // Centered text
+                }
+
+                ctx.restore();
+            });
+        }
+function closeEditor(){
+            document.getElementById("coordinateInputs").style.display = "none";
+      }
+
+        // Select an element for editing
+        function selectElement(index) {
+            selectedElementIndex = index;
+            const element = elements[index];
+
+            // Show coordinates and opacity controls
+            document.getElementById("coordinateInputs").style.display = "block";
+            xPosInput.value = (element.x / canvas.width) * 100;
+            yPosInput.value = (element.y / canvas.height) * 100;
+            scaleInput.value = element.scale;
+            rotationInput.value = element.rotation;
+            opacitySlider.value = element.opacity;
+if (element.type === "image"){
+hexInput.style.display = "none";
+}
+
+if (element.type === "text"){
+hexInput.style.display = "block";
+}
+hexInput.value = element.color;
+        }
+
+        // Delete an element
+        function deleteElement(index) {
+            elements.splice(index, 1);
+            updateImageList();
+            drawCanvas();
+        }
+
+        // Update element position based on coordinate inputs
+        function updateElementPosition() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.x = (xPosInput.value / 100) * canvas.width;
+            element.y = (yPosInput.value / 100) * canvas.height;
+            drawCanvas();
+        }
+
+        // Update element scale
+        function updateElementScale() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.scale = scaleInput.value;
+            drawCanvas();
+        }
+function updateElementColor() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            if (element.type === "text") {
+if(hexInput.value.length == 4 || hexInput.value.length == 7){
+                element.color = hexInput.value;
+}
+                drawCanvas();
+            }
+        }
+
+        // Update element rotation
+        function updateElementRotation() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.rotation = rotationInput.value;
+            drawCanvas();
+        }
+
+        // Update opacity when the slider is moved
+        function updateElementOpacity() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.opacity = opacitySlider.value;
+            drawCanvas();
+        }
+
+        // Update text color
+
+        // Clear all elements from the canvas
+        function clearAllElements() {
+    const confirmDelete = confirm("Are you sure you want to delete all elements?");
+    if (confirmDelete) {
+        elements = [];
+        updateImageList();
+        drawCanvas();
+    }
+}
+
+        // Export canvas as image
+        function exportCanvas() {
+            const dataUrl = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.href = dataUrl;
+            link.download = "canvas_image.png";
+            link.click();
+        }
+    </script>
+</body>
+</html>
