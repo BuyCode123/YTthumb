@@ -12,6 +12,10 @@
             width: 100%;
             overflow-x: hidden;
             overflow-y: auto;
+@font-face{
+	font-family: "Bold";
+	src:url("Poppins-Bold.ttf");
+}
         }
 
         body {
@@ -19,11 +23,14 @@
             flex-direction: column;
             align-items: center;
             background-color: #f0f0f0;
+            font-family: "Bold";
+       
         }
 
         .container {
             text-align: center;
             width: 100%;
+   font-family: "Bold";
         }
 
         #editorCanvas {
@@ -31,11 +38,13 @@
             background-color: #000;
             width: 100%;
             height: auto;
+   font-family: "Bold";
         }
 
         input[type="file"], input[type="text"], input[type="color"], input[type="range"] {
             margin-top: 10px;
             padding: 10px;
+   font-family: "Bold";
         }
 
         .image-list {
@@ -46,6 +55,7 @@
             padding: 10px;
             width: 100%;
             margin-top: 20px;
+   font-family: "Bold";
         }
 
         .image-list div {
@@ -53,6 +63,7 @@
             text-align: center;
             font-size: 12px;
             margin-top: 5px;
+   font-family: "Bold";
         }
 
         .image-list img, .image-list canvas {
@@ -64,17 +75,20 @@
             position: relative;
             z-index: 1;
             border: 1px solid black;
+   font-family: "Bold";
         }
 
         .coordinate-inputs {
             margin-top: 10px;
             display: none;
             text-align: center;
+   font-family: "Bold";
         }
 
         .coordinate-inputs label, .coordinate-inputs input {
             margin: 5px;
             padding: 5px;
+   font-family: "Bold";
         }
 
         .clear-all-btn, .add-text-btn, .export-btn, .done-btn{
@@ -84,19 +98,20 @@
             border: none;
             font-size: 16px;
             cursor: pointer;
+   font-family: "Bold";
         }
 
-        .clear-all-btn { background-color: red; }
+        .clear-all-btn { background-color: red;    font-family: "Bold";}
         .clear-all-btn:hover { background-color: darkred; }
 
-.done-btn { background-color: green; }
+.done-btn { background-color: green;    font-family: "Bold";}
         .done-btn:hover { background-color: darkgreen; }
 
 
-        .add-text-btn { background-color: orange; }
+        .add-text-btn { background-color: orange;    font-family: "Bold";}
         .add-text-btn:hover { background-color: darkorange; }
 
-        .export-btn { background-color: blue; }
+        .export-btn { background-color: blue;   font-family: "Bold";}
         .export-btn:hover { background-color: darkblue; }
 
         .delete-btn {
@@ -109,9 +124,11 @@
             text-align: center;
             font-size: 14px;
             border: none;
+   font-family: "Bold";
         }
 #txtHex{
 display: none;
+   font-family: "Bold";
 }
 
         .delete-btn:hover { background-color: darkred; }
