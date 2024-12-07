@@ -1,0 +1,177 @@
+font-face{
+	font-family: "Bold";
+	src:url("Poppins-Bold.ttf");
+}
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: auto;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+font-family: "Bold";
+        }
+
+        body {
+                            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            font-family: "Bold";
+        }
+
+        .container {
+            text-align: center;
+   font-family: "Bold";
+        }
+
+        #editorCanvas {
+            background-color: #000;
+            width: 100%;
+            height: auto;
+   font-family: "Bold";
+        }
+
+        input[type="file"], input[type="text"], input[type="color"], input[type="range"], input[type="number"] {
+            margin-top: 10px;
+            padding: 10px;
+   font-family: "Bold";
+border: none;
+        }
+.file-label {
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+   font-family: "Bold";
+background-color: cyan;
+}
+.file-label:hover{
+background-color: darkcyan;}
+input[type="file"]{
+            display: none;
+        }
+        .image-list {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 400px;
+            padding: 10px;
+            width: 100%;
+            margin-top: 20px;
+   font-family: "Bold";
+        }
+
+        .image-list div {
+    position: relative;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 5px;
+    display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks buttons vertically */
+    align-items: center; /* Centers buttons horizontally */
+    font-family: "Bold";
+}
+
+
+        .image-list img, .image-list canvas {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-right: 0px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            background-color: #000;
+   font-family: "Bold";
+        }
+
+        .coordinate-inputs {
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+   font-family: "Bold";
+        }
+
+        .coordinate-inputs label, .coordinate-inputs input {
+            margin: 5px;
+            padding: 5px;
+   font-family: "Bold";
+        }
+
+        .clear-all-btn, .add-text-btn, .export-btn, .done-btn{
+            margin: 10px;
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+   font-family: "Bold";
+        }
+
+        .clear-all-btn { background-color: red;    font-family: "Bold";}
+        .clear-all-btn:hover { background-color: darkred; }
+
+.done-btn { background-color: green;    font-family: "Bold";}
+        .done-btn:hover { background-color: darkgreen; }
+
+
+        .add-text-btn { background-color: orange;    font-family: "Bold";}
+        .add-text-btn:hover { background-color: darkorange; }
+
+        .export-btn { background-color: blue;   font-family: "Bold";}
+        .export-btn:hover { background-color: darkblue; }
+
+        .delete-btn {
+            cursor: pointer;
+            color: white;
+            background-color: red;
+            padding: 5px 10px;
+            margin-top: 5px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+   font-family: "Bold";
+width: 80px;
+        }
+.moveup-btn {
+            cursor: pointer;
+            color: white;
+            background-color: gray;
+            padding: 5px 10px;
+            margin-top: 0px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+   font-family: "Bold";
+width: 80px;
+        }
+.movedown-btn {
+            cursor: pointer;
+            color: white;
+            background-color: magenta;
+            padding: 5px 10px;
+            margin-top: 0px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+   font-family: "Bold";
+width: 80px;
+        }
+#txtHex{
+display: none;
+   font-family: "Bold";
+}
+footer{
+            text-align: center;
+            background: #000;
+            color: #fff;
+            padding: 1rem 0;
+            margin-top: 10rem;
+width: 100%;
+}
+
+        .delete-btn:hover { background-color: darkred; }
+ .moveup-btn:hover { background-color: darkgray;}
+.movedown-btn:hover { background-color: purple; }
