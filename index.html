@@ -71,18 +71,22 @@ input[type="file"]{
         }
 
         .image-list div {
-            position: relative;
-            text-align: center;
-            font-size: 12px;
-            margin-top: 5px;
-   font-family: "Bold";
-        }
+    position: relative;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 5px;
+    display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks buttons vertically */
+    align-items: center; /* Centers buttons horizontally */
+    font-family: "Bold";
+}
+
 
         .image-list img, .image-list canvas {
             width: 100px;
             height: 100px;
             object-fit: contain;
-            margin-right: 10px;
+            margin-right: 0px;
             cursor: pointer;
             position: relative;
             z-index: 1;
@@ -136,28 +140,31 @@ input[type="file"]{
             font-size: 14px;
             border: none;
    font-family: "Bold";
+width: 80px;
         }
 .moveup-btn {
             cursor: pointer;
             color: white;
             background-color: gray;
             padding: 5px 10px;
-            margin-top: 5px;
+            margin-top: 0px;
             text-align: center;
             font-size: 14px;
             border: none;
    font-family: "Bold";
+width: 80px;
         }
 .movedown-btn {
             cursor: pointer;
             color: white;
-            background-color: purple;
+            background-color: magenta;
             padding: 5px 10px;
-            margin-top: 5px;
+            margin-top: 0px;
             text-align: center;
             font-size: 14px;
             border: none;
    font-family: "Bold";
+width: 80px;
         }
 #txtHex{
 display: none;
@@ -174,7 +181,7 @@ width: 100%;
 
         .delete-btn:hover { background-color: darkred; }
  .moveup-btn:hover { background-color: darkgray;}
-.movedown-btn:hover { background-color: darkpurple; }
+.movedown-btn:hover { background-color: purple; }
     </style>
 </head>
 <body>
@@ -185,6 +192,10 @@ width: 100%;
 
         <input type="text" id="textInput" placeholder="Enter text...">
         <button class="add-text-btn" id="addTextBtn">Add Text</button>
+<div id="layerCounter" style="margin-bottom: 10px; font-size: 18px; font-family: 'Bold';">
+    Layers: 0
+</div>
+
         <canvas id="editorCanvas" width="1920" height="1080"></canvas>
     </div>
     
@@ -205,7 +216,7 @@ width: 100%;
 <input type="number" style="width: 50px; margin-left: 5px;" id="heightInput" placeholder="1080"></div>
     <button class="clear-all-btn" id="clearAllBtn">Clear All</button>
     <button class="export-btn" id="exportBtn">Export Image</button>
-<footer>&copy; 2024 Image Editor. All rights reserved.
+<footer>&copy; 2024 Image Editor. No rights reserved lol😂.
 </footer>
 
     <script>
@@ -226,6 +237,12 @@ width: 100%;
   const widthInput= document.getElementById("widthInput");
 const heightInput= document.getElementById("heightInput");
  const doneBtn = document.getElementById("doneBtn");
+const layerCounter = document.getElementById("layerCounter");
+
+function updateLayerCounter() {
+    layerCounter.textContent = `Layers: ${elements.length}`;
+}
+
 
         let elements = [];
         let selectedElementIndex = null;
@@ -308,6 +325,19 @@ widthInput.addEventListener("input", resizeCanvas);
                 deleteBtn.classList.add("delete-btn");
                 deleteBtn.onclick = () => deleteElement(index);
 container.appendChild(deleteBtn);
+moveUpBtn = document.createElement("span");
+moveUpBtn.textContent = "Go up";
+moveUpBtn.classList.add("moveup-btn");
+moveUpBtn.onclick = () => moveLayer(index, -1);
+
+moveDownBtn = document.createElement("span");
+moveDownBtn.textContent = "Go down";
+moveDownBtn.classList.add("movedown-btn");
+moveDownBtn.onclick = () => moveLayer(index, 1);
+
+container.appendChild(moveUpBtn);
+container.appendChild(moveDownBtn);
+
 
                 imageListContainer.appendChild(container);
             });
@@ -315,6 +345,7 @@ container.appendChild(deleteBtn);
 
         // Draw the canvas
         function drawCanvas() {
+updateLayerCounter();
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 ctx.fillStyle = "rgba(0, 0, 0, 1)";
@@ -405,6 +436,21 @@ if(hexInput.value.length == 4 || hexInput.value.length == 7){
                 drawCanvas();
             }
         }
+function moveLayer(index, direction) {
+    // Calculate the new index
+    const newIndex = index + direction;
+
+    // Check if movement is within bounds
+    if (newIndex < 0 || newIndex >= elements.length) return;
+
+    // Swap elements in the array
+    [elements[index], elements[newIndex]] = [elements[newIndex], elements[index]];
+
+    // Update UI and redraw canvas
+    updateImageList();
+    drawCanvas();
+}
+
 function resizeCanvas(){
 
 if(heightInput.value > 5000){
