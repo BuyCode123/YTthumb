@@ -20,7 +20,7 @@ font-family: "Bold";
         }
 
         body {
-            display: flex;
+                            display: flex;
             flex-direction: column;
             align-items: center;
             background-color: #f0f0f0;
@@ -29,7 +29,6 @@ font-family: "Bold";
 
         .container {
             text-align: center;
-            width: 100%;
    font-family: "Bold";
         }
 
@@ -40,29 +39,26 @@ font-family: "Bold";
    font-family: "Bold";
         }
 
-        input[type="file"], input[type="text"], input[type="color"], input[type="range"] {
+        input[type="file"], input[type="text"], input[type="color"], input[type="range"], input[type="number"] {
             margin-top: 10px;
             padding: 10px;
    font-family: "Bold";
+border: none;
         }
-input[type="file"]::file-selector-button {
-  cursor: pointer;
+.file-label {
+            padding: 10px 20px;
             color: white;
-            background-color: cyan;
-            padding: 5px 10px;
-            margin-top: 5px;
-            text-align: center;
-            font-size: 14px;
             border: none;
+            font-size: 16px;
+            cursor: pointer;
    font-family: "Bold";
+background-color: cyan;
 }
-/* file upload button hover state */
-input[type="file"]::file-selector-button:hover {
-  background-color: #darkcyan;
-}
-input[type="file"]::file-selector-button:active {
-  background-color: #darkcyan;
-}
+.file-label:hover{
+background-color: darkcyan;}
+input[type="file"]{
+            display: none;
+        }
         .image-list {
             display: flex;
             flex-direction: column;
@@ -141,21 +137,55 @@ input[type="file"]::file-selector-button:active {
             border: none;
    font-family: "Bold";
         }
+.moveup-btn {
+            cursor: pointer;
+            color: white;
+            background-color: gray;
+            padding: 5px 10px;
+            margin-top: 5px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+   font-family: "Bold";
+        }
+.movedown-btn {
+            cursor: pointer;
+            color: white;
+            background-color: purple;
+            padding: 5px 10px;
+            margin-top: 5px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+   font-family: "Bold";
+        }
 #txtHex{
 display: none;
    font-family: "Bold";
 }
+footer{
+            text-align: center;
+            background: #000;
+            color: #fff;
+            padding: 1rem 0;
+            margin-top: 10rem;
+width: 100%;
+}
 
         .delete-btn:hover { background-color: darkred; }
+ .moveup-btn:hover { background-color: darkgray;}
+.movedown-btn:hover { background-color: darkpurple; }
     </style>
 </head>
 <body>
+<h1>Image Editor v0.3</h1>
     <div class="container">
-        <input type="file" id="imageUpload" accept="image/*">
+<label for="imageUpload" class="file-label">Upload Image</label><br>
+        <input type="file" id="imageUpload" accept="image/*" >
 
-        <input type="text" id="textInput" placeholder="Add your text here">
+        <input type="text" id="textInput" placeholder="Enter text...">
         <button class="add-text-btn" id="addTextBtn">Add Text</button>
-        <canvas id="editorCanvas" width="1920px" height="1080px"></canvas>
+        <canvas id="editorCanvas" width="1920" height="1080"></canvas>
     </div>
     
     <div class="image-list" id="imageList"></div>
@@ -171,8 +201,12 @@ display: none;
     <button class="done-btn" id="doneBtn">Done</button>
     </div>
 
+        <div style="display: inline-flex;"><p style="margin-right: 15px;">size:</p><input type="number" style="width: 50px; margin-right: 5px;" id="widthInput" placeholder="1920"><p>×</p>
+<input type="number" style="width: 50px; margin-left: 5px;" id="heightInput" placeholder="1080"></div>
     <button class="clear-all-btn" id="clearAllBtn">Clear All</button>
     <button class="export-btn" id="exportBtn">Export Image</button>
+<footer>&copy; 2024 Image Editor. All rights reserved.
+</footer>
 
     <script>
         const canvas = document.getElementById("editorCanvas");
@@ -189,10 +223,14 @@ display: none;
         const clearAllBtn = document.getElementById("clearAllBtn");
         const exportBtn = document.getElementById("exportBtn");
         const hexInput = document.getElementById("txtHex");
+  const widthInput= document.getElementById("widthInput");
+const heightInput= document.getElementById("heightInput");
  const doneBtn = document.getElementById("doneBtn");
 
         let elements = [];
         let selectedElementIndex = null;
+canvas.width = 1920;
+canvas.height = 1080;
 
         imageUpload.addEventListener("change", handleImageUpload);
         addTextBtn.addEventListener("click", handleAddText);
@@ -203,8 +241,10 @@ display: none;
         opacitySlider.addEventListener("input", updateElementOpacity);
         clearAllBtn.addEventListener("click", clearAllElements);
         exportBtn.addEventListener("click", exportCanvas);
+heightInput.addEventListener("input", resizeCanvas);
 hexInput.addEventListener("input", updateElementColor);
 doneBtn.addEventListener("click", closeEditor);
+widthInput.addEventListener("input", resizeCanvas);
 
         // Handle image upload
         function handleImageUpload(event) {
@@ -263,11 +303,10 @@ doneBtn.addEventListener("click", closeEditor);
                     container.appendChild(canvas);
                 }
 
-                const deleteBtn = document.createElement("span");
+                deleteBtn = document.createElement("span");
                 deleteBtn.textContent = "Delete";
                 deleteBtn.classList.add("delete-btn");
                 deleteBtn.onclick = () => deleteElement(index);
-                container.appendChild(deleteBtn);
 
                 imageListContainer.appendChild(container);
             });
@@ -290,6 +329,9 @@ ctx.fillStyle = "rgba(0, 0, 0, 1)";
                     const imgWidth = element.img.width * (element.scale / 100);
                     const imgHeight = element.img.height * (element.scale / 100);
                     ctx.drawImage(element.img, -imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
+                    ctx.strokeStyle = "#ffffff"; // Outline color
+                    ctx.lineWidth = 10;
+                    ctx.strokeRect(-imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
                 } else if (element.type === "text") {
                     ctx.font = `${element.scale}px Arial`;
                     ctx.fillStyle = element.color;
@@ -357,8 +399,25 @@ function updateElementColor() {
 if(hexInput.value.length == 4 || hexInput.value.length == 7){
                 element.color = hexInput.value;
 }
+        updateImageList();
                 drawCanvas();
             }
+        }
+function resizeCanvas(){
+
+if(heightInput.value > 5000){
+heightInput.value = 5000;
+}
+if(widthInput.value > 5000){
+widthInput.value = 5000;
+}
+if(heightInput.value.length > 0){
+canvas.height = heightInput.value;
+}
+if(widthInput.value.length > 0){
+canvas.width = widthInput.value;
+}
+                drawCanvas();
         }
 
         // Update element rotation
