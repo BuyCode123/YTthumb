@@ -329,7 +329,7 @@ ctx.fillStyle = "rgba(0, 0, 0, 1)";
                 if (element.type === "image") {
                     const imgWidth = element.img.width * (element.scale / 100);
                     const imgHeight = element.img.height * (element.scale / 100);
-                    //ctx.drawImage(element.img, -imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
+                    ctx.drawImage(element.img, -imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
                     //ctx.strokeStyle = "#ffffff"; // Outline color
                     //ctx.lineWidth = 10;
                     //ctx.strokeRect(-imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
