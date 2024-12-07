@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Image & Text Editor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>@font-face{
 	font-family: "Bold";
 	src:url("Poppins-Bold.ttf");
@@ -24,6 +25,7 @@ font-family: "Bold";
             align-items: center;
             background-color: #f6f6f6;
             font-family: "Bold";
+text-align: center;
         }
 
         .container {
@@ -183,20 +185,37 @@ footer{
             background: #f6f6f6;
             color: #000;
             padding: 1rem 0;
-            margin-top: 10rem;
+            margin-top: 5rem;
 border-top: #ccc solid 2px;
 width: 100%;
 }
 h1{
 color: #000;
 }
+.checked{
+color: #ffc000;
+.nochecked{
+color: #000000;
+}
+.rating-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+        }
+
+        .stars {
+            display: inline-flex;
+            align-items: center;
+        }
 
         .delete-btn:hover { background-color: darkred; }
  .moveup-btn:hover { background-color: darkgray;}
-.movedown-btn:hover { background-color: purple; }</style>
+.movedown-btn:hover { background-color: purple; }
+</style>
 </head>
 <body>
-<h1>CTRpixAi v0.25</h1>
+<h1>CTRpixAi v0.3</h1>
     <div class="container">
 <label for="imageUpload" class="file-label">Upload Image</label>
         <input type="file" id="imageUpload" accept="image/*" ><br>
@@ -226,10 +245,26 @@ color: #000;
         <div style="display: inline-flex;"><p style="margin-right: 15px;">size:</p><input type="number" style="width: 50px; margin-right: 5px;" id="widthInput" placeholder="1920"><p>×</p>
 <input type="number" style="width: 50px; margin-left: 5px;" id="heightInput" placeholder="1080"></div>
 <div style="display: inline-flex;"><p style="margin-right: 15px;"><p>name:</p>
-<input type="text" style="width: 70px; margin-left: 5px;" id="nameInput" placeholder="thumbnail"><p>.png</p></div>
+<input type="text" style="width: 80px; margin-left: 5px;" id="nameInput" placeholder="thumbnail"><p>.png</p></div>
    
     <button class="clear-all-btn" id="clearAllBtn">Clear All</button>
     <button class="export-btn" id="exportBtn">Export Image</button>
+<div id="layerCounter" style="font-size: 18px; font-family: 'Bold'; border: #ccc solid 2px; width: 90%; border-radius: 5px;">
+    <h3>Rating</h3>
+<p>24,692 reviews</p>
+<div class="rating-container">
+    <div class="stars">
+        <!-- Filled stars -->
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <!-- Empty star -->
+        <span class="fa fa-star nochecked"></span>
+<span><p>4.2/5.0 stars</p></span>
+    </div>
+</div>
+</div>
 <footer>&copy; 2024 CTRpixAi. All rights reserved.
 </footer>
 <script>
@@ -256,8 +291,6 @@ const nameInput = document.getElementById("nameInput");
 function updateLayerCounter() {
     layerCounter.textContent = `Layers: ${elements.length}`;
 }
-
-
         let elements = [];
         let selectedElementIndex = null;
 canvas.width = 1920;
