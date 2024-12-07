@@ -180,8 +180,8 @@ width: 100%;
 <body>
 <h1>Image Editor v0.3</h1>
     <div class="container">
-<label for="imageUpload" class="file-label">Upload Image</label><br>
-        <input type="file" id="imageUpload" accept="image/*" >
+<label for="imageUpload" class="file-label">Upload Image</label>
+        <input type="file" id="imageUpload" accept="image/*" ><br>
 
         <input type="text" id="textInput" placeholder="Enter text...">
         <button class="add-text-btn" id="addTextBtn">Add Text</button>
@@ -269,7 +269,7 @@ widthInput.addEventListener("input", resizeCanvas);
             const text = textInput.value.trim();
             if (!text) return;
 
-            elements.push({ type: "text", text, x: canvas.width / 2, y: canvas.height / 2, scale: 100, rotation: 0, color: "#ffffff", opacity: 100 });
+            elements.push({ type: "text", text, x: canvas.width / 2, y: canvas.height / 2, scale: 100, rotation: 0, color: "#ffffff", opacity: 100});
             textInput.value = "";
             updateImageList();
             drawCanvas();
@@ -307,6 +307,7 @@ widthInput.addEventListener("input", resizeCanvas);
                 deleteBtn.textContent = "Delete";
                 deleteBtn.classList.add("delete-btn");
                 deleteBtn.onclick = () => deleteElement(index);
+container.appendChild(deleteBtn);
 
                 imageListContainer.appendChild(container);
             });
@@ -328,11 +329,11 @@ ctx.fillStyle = "rgba(0, 0, 0, 1)";
                 if (element.type === "image") {
                     const imgWidth = element.img.width * (element.scale / 100);
                     const imgHeight = element.img.height * (element.scale / 100);
-                    ctx.drawImage(element.img, -imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
-                    ctx.strokeStyle = "#ffffff"; // Outline color
-                    ctx.lineWidth = 10;
-                    ctx.strokeRect(-imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
-                } else if (element.type === "text") {
+                    //ctx.drawImage(element.img, -imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
+                    //ctx.strokeStyle = "#ffffff"; // Outline color
+                    //ctx.lineWidth = 10;
+                    //ctx.strokeRect(-imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
+                      } else if (element.type === "text") {
                     ctx.font = `${element.scale}px Arial`;
                     ctx.fillStyle = element.color;
                     ctx.textAlign = "center";
@@ -373,6 +374,7 @@ hexInput.value = element.color;
         function deleteElement(index) {
             elements.splice(index, 1);
             updateImageList();
+closeEditor();
             drawCanvas();
         }
 
