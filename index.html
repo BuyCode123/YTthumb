@@ -116,6 +116,9 @@ box-shadow: 0 0 0px rgba(0, 123, 255, 0); /* Custom focus indication */
             z-index: 1;
             background-color: #000;
    font-family: "Bold";
+box-shadow: 0 0 0px rgba(0, 123, 255, 0); /* Custom focus indication */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         }
 
         .coordinate-inputs {
@@ -257,6 +260,9 @@ color: #000000;
 <label id="txtHexLabel" for="txtHex">Color: </label><input type="text" id="txtHex" placeholder="#ff0000" maxlength="7">
 
     <button class="done-btn" id="doneBtn">Done</button>
+<!-- Add the Remove Background button next to the Done button -->
+<button class="done-btn" id="removeBgBtn">Remove Bg</button>
+
     </div>
 
         <div style="display: inline-flex;"><p style="margin-right: 15px;">size:</p><input type="number" style="width: 50px; margin-right: 5px;" id="widthInput" placeholder="1920"><p>×</p>
@@ -326,7 +332,67 @@ hexInput.addEventListener("input", updateElementColor);
 doneBtn.addEventListener("click", closeEditor);
 widthInput.addEventListener("input", resizeCanvas);
 nameInput.addEventListener("input", renameCanvas);
+const removeBgBtn = document.getElementById("removeBgBtn");
 
+removeBgBtn.addEventListener("click", async () => {
+    if (selectedElementIndex === null) {
+        alert("Please select an image first.");
+        return;
+    }
+
+    const element = elements[selectedElementIndex];
+    if (element.type !== "image") {
+        alert("Only images can have their background removed.");
+        return;
+    }
+removeBgBtn.textContent = "Removing...";
+
+    try {
+        const formData = new FormData();
+        formData.append("image_file", await fetch(element.img.src).then(res => res.blob()));
+        formData.append("size", "auto");
+
+        const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+            method: "POST",
+            headers: {
+                "X-Api-Key": "35uJGfSWcyUL26diTEDptgiK",
+            },
+            body: formData,
+        });
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.src = url;
+
+            img.onload = function () {
+                // Replace the image while preserving original size and position
+                const originalWidth = element.img.width;
+                const originalHeight = element.img.height;
+                const originalX = element.x;
+                const originalY = element.y;
+
+                // Update the image object with the new background-removed image
+                element.img = img;
+                element.img.width = originalWidth; // Preserve original width
+                element.img.height = originalHeight; // Preserve original height
+                element.x = originalX; // Preserve original x position
+                element.y = originalY; // Preserve original y position
+                drawCanvas(); // Redraw the canvas with the updated image
+                updateImageList(); // Update the image list to reflect the changes
+            };
+        } else {
+removeBgBtn.textContent = "Failed :(";
+            const error = await response.text();
+            //alert(`Failed to remove background: ${error}`);
+        }
+    } catch (err) {
+removeBgBtn.textContent = "Failed :(";
+        //console.error(err);
+        //alert("An error occurred while processing the image.");
+    }
+});
         // Handle image upload
         function handleImageUpload(event) {
             const file = event.target.files[0];
@@ -358,6 +424,7 @@ nameInput.addEventListener("input", renameCanvas);
 
         // Update the image list
         function updateImageList() {
+removeBgBtn.textContent = "Remove Bg";
             imageListContainer.innerHTML = '';
 
             elements.forEach((element, index) => {
@@ -452,6 +519,12 @@ if (element.type === "text"){
 hexInput.style.display = "block";
 document.getElementById("txtHexLabel").style.display = "block";
 }
+if(element.type === "image"){
+removeBgBtn.style.display = "inline-block";
+}
+if(element.type === "text"){
+removeBgBtn.style.display = "none";
+}
 
 hexInput.value = element.color;
         }
@@ -489,80 +562,4 @@ if(hexInput.value.length == 4 || hexInput.value.length == 7){
 }
         updateImageList();
                 drawCanvas();
-            }
-        }
-function moveLayer(index, direction) {
-    // Calculate the new index
-    const newIndex = index + direction;
-
-    // Check if movement is within bounds
-    if (newIndex < 0 || newIndex >= elements.length) return;
-
-    // Swap elements in the array
-    [elements[index], elements[newIndex]] = [elements[newIndex], elements[index]];
-
-    // Update UI and redraw canvas
-    updateImageList();
-    drawCanvas();
-}
-
-function resizeCanvas(){
-
-if(heightInput.value > 5000){
-heightInput.value = 5000;
-}
-if(widthInput.value > 5000){
-widthInput.value = 5000;
-}
-if(heightInput.value.length > 0){
-canvas.height = heightInput.value;
-}
-if(widthInput.value.length > 0){
-canvas.width = widthInput.value;
-}
-                drawCanvas();
-        }
-function renameCanvas(){
-nameInput.value = nameInput.value.replace(/\..*/, "");
-}
-
-        // Update element rotation
-        function updateElementRotation() {
-            if (selectedElementIndex === null) return;
-            const element = elements[selectedElementIndex];
-            element.rotation = rotationInput.value;
-            drawCanvas();
-        }
-
-        // Update opacity when the slider is moved
-        function updateElementOpacity() {
-            if (selectedElementIndex === null) return;
-            const element = elements[selectedElementIndex];
-            element.opacity = opacitySlider.value;
-            drawCanvas();
-        }
-
-        // Update text color
-
-        // Clear all elements from the canvas
-        function clearAllElements() {
-    const confirmDelete = confirm("Are you sure you want to delete all elements?");
-    if (confirmDelete) {
-        elements = [];
-        updateImageList();
-        drawCanvas();
-    }
-}
-
-        // Export canvas as image
-        function exportCanvas() {
-            const dataUrl = canvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.href = dataUrl;
-            link.download = `${nameInput.value}.png`;
-            link.click();
-}
-     </script>
-</body>
-</html>
-
+            
