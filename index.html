@@ -562,4 +562,47 @@ if(hexInput.value.length == 4 || hexInput.value.length == 7){
 }
         updateImageList();
                 drawCanvas();
-            
+        }
+function renameCanvas(){
+nameInput.value = nameInput.value.replace(/\..*/, "");
+}
+
+        // Update element rotation
+        function updateElementRotation() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.rotation = rotationInput.value;
+            drawCanvas();
+        }
+
+        // Update opacity when the slider is moved
+        function updateElementOpacity() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.opacity = opacitySlider.value;
+            drawCanvas();
+        }
+
+        // Update text color
+
+        // Clear all elements from the canvas
+        function clearAllElements() {
+    const confirmDelete = confirm("Are you sure you want to delete all elements?");
+    if (confirmDelete) {
+        elements = [];
+        updateImageList();
+        drawCanvas();
+    }
+}
+
+        // Export canvas as image
+        function exportCanvas() {
+            const dataUrl = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.href = dataUrl;
+            link.download = `${nameInput.value}.png`;
+            link.click();
+}
+     </script>
+</body>
+</html>
