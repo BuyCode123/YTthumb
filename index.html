@@ -65,6 +65,18 @@ background-color: darkcyan;}
 input[type="file"]{
             display: none;
         }
+input[type="number"] {
+      -moz-appearance: textfield; /* Firefox */
+      -webkit-appearance: none; /* Safari and Chrome */
+      appearance: none; /* Standard property */
+    }
+
+    /* Optional: Prevent margin gaps */
+    input[type="number"]::-webkit-inner-spin-button, 
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
         .image-list {
             display: flex;
             flex-direction: column;
@@ -539,6 +551,16 @@ nameInput.value = nameInput.value.replace(/\..*/, "");
         // Export canvas as image
         function exportCanvas() {
             const dataUrl = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.href = dataUrl;
+            link.download = `${nameInput.value}.png`;
+            link.click();
+}
+     </script>
+</body>
+</html>
+
+t dataUrl = canvas.toDataURL("image/png");
             const link = document.createElement("a");
             link.href = dataUrl;
             link.download = `${nameInput.value}.png`;
