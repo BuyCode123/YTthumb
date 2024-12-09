@@ -298,6 +298,7 @@ color: #000000;
 </div>
 <footer>&copy; 2024 CTRpixAi. All rights reserved.
 </footer>
+</body>
 <script>
         const canvas = document.getElementById("editorCanvas");
         const ctx = canvas.getContext("2d");
@@ -662,23 +663,4 @@ updateImageList();
             link.click();
 }
      </script>
-</body>
-</html>irm("Are you sure you want to delete all elements?");
-    if (confirmDelete) {
-        elements = [];
-        updateImageList();
-        drawCanvas();
-    }
-}
-
-        // Export canvas as image
-        function exportCanvas() {
-            const dataUrl = canvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.href = dataUrl;
-            link.download = `${nameInput.value}.png`;
-            link.click();
-}
-     </script>
-</body>
 </html>
