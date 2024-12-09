@@ -259,7 +259,7 @@ color: #000000;
     <div class="coordinate-inputs" id="coordinateInputs">
         <label for="xPos">X: </label><input type="range" id="xPos" min="-25" max="125" value="50">
         <label for="yPos">Y: </label><input type="range" id="yPos" min="-25" max="125" value="50">
-<label for="tiltPos">Tilt: </label><input type="range" id="tiltPos" min="-25" max="25" value="0.00"><label for="scale">Scale: </label><input type="range" id="scale" min="1" max="1000" value="100">
+<label for="tiltPos" id="tiltLabel">Tilt: </label><input type="range" id="tiltPos" min="-25" max="25" value="0.00"><label for="scale">Scale: </label><input type="range" id="scale" min="1" max="1000" value="100">
         <label for="rotation">Rotation: </label><input type="range" id="rotation" min="-360" max="360" value="0">
         <label for="opacity">Opacity: </label><input type="range" id="opacity" min="0" max="100" value="100">
 <label id="txtHexLabel" for="txtHex">Color: </label><input type="text" id="txtHex" placeholder="#ff0000" maxlength="7">
@@ -347,7 +347,7 @@ widthInput.addEventListener("input", resizeCanvas);
 nameInput.addEventListener("input", renameCanvas);
 const txtValueInput = document.getElementById("txtValue");
 const txtValueLabel = document.getElementById("txtValueLabel");
-
+const angleInputLabel = document.getElementById("tiltLabel");
 txtValueInput.addEventListener("input", () => {
     if (selectedElementIndex === null) return;
     const element = elements[selectedElementIndex];
@@ -571,6 +571,7 @@ angleInput.value = element.angle;
         hexInput.style.display = "block";
         txtValueInput.style.display = "block";
 angleInput.style.display = "none";
+angleInputLabel.style.display = "none";
         txtValueLabel.style.display = "block";
 txtHexLabel.style.display = "block";
         removeBgBtn.style.display = "none";
@@ -578,7 +579,8 @@ txtHexLabel.style.display = "block";
         txtValueInput.value = element.text; // Show current text
     } else if (element.type === "image") {
         hexInput.style.display = "none";
-angleInput.style.display = "block";
+angleInput.style.display = "flex";
+angleInputLabel.style.display = "flex";
         txtValueInput.style.display = "none";
 txtHexLabel.style.display = "none";
         txtValueLabel.style.display = "none";
@@ -694,22 +696,4 @@ updateImageList();
      </script>
 </html>
 /script>
-</html>
-sure you want to delete all elements?");
-    if (confirmDelete) {
-        elements = [];
-        updateImageList();
-        drawCanvas();
-    }
-}
-
-        // Export canvas as image
-        function exportCanvas() {
-            const dataUrl = canvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.href = dataUrl;
-            link.download = `${nameInput.value}.png`;
-            link.click();
-}
-     </script>
 </html>
