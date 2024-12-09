@@ -259,7 +259,7 @@ color: #000000;
     <div class="coordinate-inputs" id="coordinateInputs">
         <label for="xPos">X: </label><input type="range" id="xPos" min="-25" max="125" value="50">
         <label for="yPos">Y: </label><input type="range" id="yPos" min="-25" max="125" value="50">
-<label for="tiltPos" id="tiltLabel">Tilt: </label><input type="range" id="tiltPos" min="-25" max="25" value="0.00"><label for="scale">Scale: </label><input type="range" id="scale" min="1" max="1000" value="100">
+<label for="tiltPos" id="tiltLabel">Tilt: </label><input type="range" id="tiltPos" min="-90" max="90" value="0.00"><label for="scale">Scale: </label><input type="range" id="scale" min="1" max="1000" value="100">
         <label for="rotation">Rotation: </label><input type="range" id="rotation" min="-30" max="30" value="0">
         <label for="opacity">Opacity: </label><input type="range" id="opacity" min="0" max="100" value="100">
 <label id="txtHexLabel" for="txtHex">Color: </label><input type="text" id="txtHex" placeholder="#ff0000" maxlength="7">
@@ -523,8 +523,8 @@ const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
 const xPos = element.x-centerX;
 const yPos = element.y-centerY;
-      const scaleX = Math.cos((element.angle*12)*(Math.PI/90)); // Horizontal compression based on rotation
-      const skewY = Math.sin((element.angle*12)*(Math.PI/90))*0.25; // Skew for depth 
+      const scaleX = Math.cos((element.angle*4)*(Math.PI/90)); // Horizontal compression based on rotation
+      const skewY = Math.sin((element.angle*4)*(Math.PI/90))*0.25; // Skew for depth 
       //
       // Apply transformations
       ctx.setTransform(
