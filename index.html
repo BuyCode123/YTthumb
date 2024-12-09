@@ -568,23 +568,23 @@ function closeEditor(){
 angleInput.value = element.angle;
 
     if (element.type === "text") {
-        hexInput.style.display = "block";
-        txtValueInput.style.display = "block";
+        hexInput.style.display = "initial";
+        txtValueInput.style.display = "initial";
 angleInput.style.display = "none";
 angleInputLabel.style.display = "none";
-        txtValueLabel.style.display = "block";
-txtHexLabel.style.display = "block";
+        txtValueLabel.style.display = "initial";
+txtHexLabel.style.display = "initial";
         removeBgBtn.style.display = "none";
         hexInput.value = element.color;
         txtValueInput.value = element.text; // Show current text
     } else if (element.type === "image") {
         hexInput.style.display = "none";
-angleInput.style.display = "flex";
+angleInput.style.display = "initial";
 angleInputLabel.style.display = "initial";
         txtValueInput.style.display = "none";
 txtHexLabel.style.display = "none";
         txtValueLabel.style.display = "none";
-        removeBgBtn.style.display = "inline-block";
+        removeBgBtn.style.display = "initial";
     }
 }
 
