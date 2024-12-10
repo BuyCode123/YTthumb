@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Image & Text Editor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>@font-face{
+	font-family: "Bold";
+	src:url("Poppins-Bold.ttf");
+}
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: auto;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+font-family: "Bold";
+        }
+
+        body {
+                            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f6f6f6;
+            font-family: "Bold";
+text-align: center;
+        }
+
+        .container {
+            text-align: center;
+   font-family: "Bold";
+        }
+
+        #editorCanvas {
+            background-color: #000;
+            width: 90%;
+            height: auto;
+   font-family: "Bold";
+border-radius: 5px;
+border: #ccc solid 2px;
+margin: auto;
+        }
+
+        input[type="file"], input[type="text"], input[type="color"], input[type="range"], input[type="number"] {
+            margin-top: 10px;
+            padding: 10px;
+   font-family: "Bold";
+border-radius: 5px;
+border: none;
+        }
+.file-label {
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+   font-family: "Bold";
+background-color: cyan;
+border-radius: 5px;
+}
+.file-label:hover{
+background-color: darkcyan;}
+input[type="file"]{
+            display: none;
+        }
+input[type="number"] {
+      -moz-appearance: textfield; /* Firefox */
+      -webkit-appearance: none; /* Safari and Chrome */
+      appearance: none; /* Standard property */
+    }
+
+    /* Optional: Prevent margin gaps */
+    input[type="number"]::-webkit-inner-spin-button, 
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+        .image-list {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 400px;
+            padding: 10px;
+            width: 100%;
+            margin-top: 20px;
+   font-family: "Bold";
+        }
+button, a, .file-label{
+user-select: none;
+box-shadow: 0 0 0px rgba(0, 123, 255, 0); /* Custom focus indication */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+        .image-list div {
+    position: relative;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 5px;
+    display: flex; /* Enables flexbox */
+    flex-direction: column; /* Stacks buttons vertically */
+    align-items: center; /* Centers buttons horizontally */
+    font-family: "Bold";
+}
+
+
+        .image-list img, .image-list canvas {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-right: 0px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            background-color: #000;
+   font-family: "Bold";
+box-shadow: 0 0 0px rgba(0, 123, 255, 0); /* Custom focus indication */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+        .coordinate-inputs {
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+   font-family: "Bold";
+        }
+
+        .coordinate-inputs label, .coordinate-inputs input {
+            margin: 5px;
+            padding: 5px;
+   font-family: "Bold";
+        }
+
+        .clear-all-btn, .add-text-btn, .export-btn, .done-btn, .bg-btn, .share-btn{
+            margin: 10px;
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            font-size: 16px;
+border-radius: 5px;
+            cursor: pointer;
+   font-family: "Bold";
+        }
+
+        .clear-all-btn { background-color: red;    font-family: "Bold";}
+        .clear-all-btn:hover { background-color: darkred; }
+
+.done-btn { background-color: green;    font-family: "Bold";}
+        .done-btn:hover { background-color: darkgreen; }
+
+        .add-text-btn { background-color: orange;    font-family: "Bold";}
+        .add-text-btn:hover { background-color: darkorange; }
+
+        .export-btn { background-color: blue;   font-family: "Bold";}
+        .export-btn:hover { background-color: darkblue; }
+.share-btn { background-color: orange;   font-family: "Bold";}
+        .share-btn:hover { background-color: darkorange; }
+
+        .delete-btn {
+            cursor: pointer;
+            color: white;
+            background-color: red;
+            padding: 5px 10px;
+            margin-top: 5px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+border-radius: 5px;
+   font-family: "Bold";
+width: 80px;
+        }
+.moveup-btn {
+            cursor: pointer;
+            color: white;
+            background-color: gray;
+            padding: 5px 10px;
+            margin-top: 0px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+border-radius: 5px;
+   font-family: "Bold";
+width: 80px;
+        }
+.movedown-btn {
+            cursor: pointer;
+            color: white;
+            background-color: magenta;
+            padding: 5px 10px;
+            margin-top: 0px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+border-radius: 5px;
+   font-family: "Bold";
+width: 80px;
+        }
+.txtHex{
+display: none;
+   font-family: "Bold";
+}
+.txtValue {
+    display: none;
+   font-family: "Bold";
+}
+footer{
+            text-align: center;
+            background: #f6f6f6;
+            color: #000;
+            padding: 1rem 0;
+            margin-top: 5rem;
+border-top: #ccc solid 2px;
+width: 100%;
+}
+.logo{
+margin-bottom: 3rem;}
+h1{
+color: #000;
+}
+.checked{
+color: #ffc000;
+.nochecked{
+color: #000000;
+}
+.rating-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+        }
+
+        .stars {
+            display: inline-flex;
+            align-items: center;
+        }
+        .delete-btn:hover { background-color: darkred; }
+ .moveup-btn:hover { background-color: darkgray;}
+.movedown-btn:hover { background-color: purple; }
+</style>
+</head>
+<body>
+<div class="logo"><h1>CTRpixAi v0.3</h1><div style="left: 0; width: 100%; position: relative; padding-bottom: 56.25%;"><iframe src="https://www.youtube.com/embed/kfIsp4l0OaY?rel=0" style="top: 0; left: 0; border: #ccc solid 2px; border-radius: 5px; width: 100%; height: 100%; position: absolute;" allowfullscreen scrolling="no" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share;"></iframe></div></div>
+    <div class="container">
+<label for="imageUpload" class="file-label">Upload Image</label>
+        <input type="file" id="imageUpload" accept="image/*" ><br>
+
+        <input type="text" id="textInput" placeholder="Enter text...">
+        <button class="add-text-btn" id="addTextBtn">Add Text</button>
+<div id="layerCounter" style="margin-bottom: 10px; font-size: 18px; font-family: 'Bold';">
+    Layers: 0
+</div>
+
+        <canvas id="editorCanvas" width="1920" height="1080"></canvas>
+    </div>
+    
+    <div class="image-list" id="imageList"></div>
+
+    <div class="coordinate-inputs" id="coordinateInputs">
+        <label for="xPos">X: </label><input type="range" class="slider" id="xPos" min="-25" max="125" value="50">
+        <label for="yPos">Y: </label><input type="range" id="yPos" min="-25" max="125" value="50">
+<label for="tiltPos" id="tiltLabel">Tilt: </label><input type="range" id="tiltPos" min="-10" max="10" value="0.00"><label for="scale">Scale: </label><input type="range" id="scale" min="1" max="1000" value="100">
+        <label for="rotation">Rotation: </label><input type="range" id="rotation" min="-180" max="180" value="0">
+        <label for="opacity">Opacity: </label><input type="range" id="opacity" min="0" max="100" value="100">
+<label id="txtHexLabel" for="txtHex">Color: </label><input type="text" id="txtHex" placeholder="#ff0000" maxlength="7">
+<label id="txtValueLabel" for="txtValue">Edit Text: </label>
+<input type="text" id="txtValue" placeholder="Change text" maxlength="100">
+
+
+    <button class="done-btn" id="doneBtn">Done</button>
+<!-- Add the Remove Background button next to the Done button -->
+<button class="done-btn" id="removeBgBtn">Remove Bg</button>
+
+    </div>
+
+        <div style="display: inline-flex;"><p style="margin-right: 15px;">size:</p><input type="number" style="width: 50px; margin-right: 5px;" id="widthInput" placeholder="1920"><p>×</p>
+<input type="number" style="width: 50px; margin-left: 5px;" id="heightInput" placeholder="1080"></div>
+<div style="display: inline-flex;"><p style="margin-right: 15px;"><p>name:</p>
+<input type="text" style="width: 80px; margin-left: 5px;" id="nameInput" placeholder="thumbnail"><p>.png</p></div>
+   
+    <button class="clear-all-btn" id="clearAllBtn">Clear All</button>
+    <button class="export-btn" id="exportBtn">Export Image</button>
+<button class="share-btn" id="shareBtn">Share Image</button>
+<div id="layerCounter" style="font-size: 18px; font-family: 'Bold'; border: #ccc solid 2px; width: 90%; border-radius: 5px;">
+    <h3>Rating</h3>
+<p>24,692 reviews</p>
+<div class="rating-container">
+    <div class="stars">
+        <!-- Filled stars -->
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <!-- Empty star -->
+        <span class="fa fa-star nochecked"></span>
+<span><p>4.2/5.0 stars</p></span>
+    </div>
+</div>
+</div>
+<footer>&copy; 2024 CTRpixAi. All rights reserved.
+</footer>
+</body>
+<script>
+        const canvas = document.getElementById("editorCanvas");
+        const ctx = canvas.getContext("2d");
+        const imageUpload = document.getElementById("imageUpload");
+        const textInput = document.getElementById("textInput");
+        const opacitySlider = document.getElementById("opacity");
+        const addTextBtn = document.getElementById("addTextBtn");
+        const imageListContainer = document.getElementById("imageList");
+        const xPosInput = document.getElementById("xPos");
+        const yPosInput = document.getElementById("yPos");
+        const scaleInput = document.getElementById("scale");
+        const rotationInput = document.getElementById("rotation");
+const angleInput = document.getElementById("tiltPos");
+        const clearAllBtn = document.getElementById("clearAllBtn");
+        const exportBtn = document.getElementById("exportBtn");
+const shareBtn = document.getElementById("shareBtn");
+        const hexInput = document.getElementById("txtHex");
+const txtHexLabel = document.getElementById("txtHexLabel");
+
+  const widthInput = document.getElementById("widthInput");
+const heightInput= document.getElementById("heightInput");
+ const doneBtn = document.getElementById("doneBtn");
+const layerCounter = document.getElementById("layerCounter");
+const nameInput = document.getElementById("nameInput");
+
+function updateLayerCounter() {
+    layerCounter.textContent = `Layers: ${elements.length}`;
+}
+        let elements = [];
+        let selectedElementIndex = null;
+canvas.width = 1920;
+canvas.height = 1080;
+        imageUpload.addEventListener("change", handleImageUpload);
+        addTextBtn.addEventListener("click", handleAddText);
+        xPosInput.addEventListener("input", updateElementPosition);
+        yPosInput.addEventListener("input", updateElementPosition);
+        scaleInput.addEventListener("input", updateElementScale);
+angleInput.addEventListener("input", updateElementAngle);
+        rotationInput.addEventListener("input", updateElementRotation);
+        opacitySlider.addEventListener("input", updateElementOpacity);
+        clearAllBtn.addEventListener("click", clearAllElements);
+        exportBtn.addEventListener("click", exportCanvas);
+shareBtn.addEventListener("click", shareCanvasImage);
+heightInput.addEventListener("input", resizeCanvas);
+hexInput.addEventListener("input", updateElementColor);
+doneBtn.addEventListener("click", closeEditor);
+widthInput.addEventListener("input", resizeCanvas);
+nameInput.addEventListener("input", renameCanvas);
+const txtValueInput = document.getElementById("txtValue");
+const txtValueLabel = document.getElementById("txtValueLabel");
+const angleInputLabel = document.getElementById("tiltLabel");
+txtValueInput.addEventListener("input", () => {
+    if (selectedElementIndex === null) return;
+    const element = elements[selectedElementIndex];
+    if (element.type === "text") {
+        element.text = txtValueInput.value;
+        updateImageList(); // Update the preview
+        drawCanvas(); // Redraw the canvas
+    }
+});
+
+const removeBgBtn = document.getElementById("removeBgBtn");
+
+removeBgBtn.addEventListener("click", async () => {
+    if (selectedElementIndex === null) {
+        alert("Please select an image first.");
+        return;
+    }
+
+    const element = elements[selectedElementIndex];
+    if (element.type !== "image") {
+        alert("Only images can have their background removed.");
+        return;
+    }
+removeBgBtn.textContent = "Removing...";
+
+    try {
+        const formData = new FormData();
+        formData.append("image_file", await fetch(element.img.src).then(res => res.blob()));
+        formData.append("size", "auto");
+
+        const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+            method: "POST",
+            headers: {
+                "X-Api-Key": "35uJGfSWcyUL26diTEDptgiK",
+            },
+            body: formData,
+        });
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.src = url;
+
+            img.onload = function () {
+                // Replace the image while preserving original size and position
+                const originalWidth = element.img.width;
+                const originalHeight = element.img.height;
+                const originalX = element.x;
+                const originalY = element.y;
+
+                // Update the image object with the new background-removed image
+                element.img = img;
+                element.img.width = originalWidth; // Preserve original width
+                element.img.height = originalHeight; // Preserve original height
+                element.x = originalX; // Preserve original x position
+                element.y = originalY; // Preserve original y position
+                drawCanvas(); // Redraw the canvas with the updated image
+                updateImageList(); // Update the image list to reflect the changes
+            };
+        } else {
+removeBgBtn.textContent = "Failed :(";
+            const error = await response.text();
+            //alert(`Failed to remove background: ${error}`);
+        }
+    } catch (err) {
+removeBgBtn.textContent = "Failed :(";
+        //console.error(err);
+        //alert("An error occurred while processing the image.");
+    }
+});
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    elements.push({ type: "image", img, x: canvas.width / 2, y: canvas.height / 2, scale: 100, rotation: 0, opacity: 100, angle: 0});
+                    updateImageList();
+                    drawCanvas();
+                };
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // Handle adding text
+        function handleAddText() {
+            const text = textInput.value.trim();
+            if (!text) return;
+
+            elements.push({ type: "text", text, x: canvas.width / 2, y: canvas.height / 2, scale: 100, rotation: 0, color: "#ffffff", opacity: 100});
+            textInput.value = "";
+            updateImageList();
+            drawCanvas();
+        }
+
+        // Update the image list
+        function updateImageList() {
+removeBgBtn.textContent = "Remove Bg";
+            imageListContainer.innerHTML = '';
+
+            elements.forEach((element, index) => {
+                const container = document.createElement("div");
+
+                if (element.type === "image") {
+                    const canvas = document.createElement("canvas");
+            canvas.width = 100;
+            canvas.height = 100; // Ensure square canvas for image preview
+            const ctx = canvas.getContext("2d");
+ctx.globalAlpha = element.opacity / 100;
+
+            // Scale the image proporionally to fit within the canvas
+            const scaleFactor = Math.min(canvas.width / element.img.width, canvas.height / element.img.height);
+            const scaledWidth = element.img.width * scaleFactor;
+            const scaledHeight = element.img.height * scaleFactor;
+            const offsetX = (canvas.width - scaledWidth) / 2;
+            const offsetY = (canvas.height - scaledHeight) / 2;
+
+            ctx.drawImage(element.img, offsetX, offsetY, scaledWidth, scaledHeight);
+            canvas.onclick = () => selectElement(index);
+            container.appendChild(canvas);
+                } else if (element.type === "text") {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = 100;
+                    canvas.height = 100;  // Ensure square canvas for text preview
+                    const ctx = canvas.getContext("2d");
+
+                    ctx.font = `${70/(element.text.length/2)}px Arial`;
+                    ctx.fillStyle = element.color;
+                    ctx.globalAlpha = element.opacity / 100;  // Apply opacity
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(element.text, canvas.width / 2, canvas.height / 2);
+                    canvas.onclick = () => selectElement(index);
+                    container.appendChild(canvas);
+                }
+
+                deleteBtn = document.createElement("span");
+                deleteBtn.textContent = "Delete";
+                deleteBtn.classList.add("delete-btn");
+                deleteBtn.onclick = () => deleteElement(index);
+container.appendChild(deleteBtn);
+
+
+                imageListContainer.appendChild(container);
+            });
+        }
+
+        // Draw the canvas
+        function drawCanvas() {
+updateLayerCounter();
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+ctx.fillStyle = "rgba(0, 0, 0, 1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+            elements.forEach((element) => {
+                ctx.save();
+ctx.translate(element.x, element.y);
+                ctx.rotate((element.rotation * Math.PI) / 180);
+                ctx.globalAlpha = element.opacity / 100;  // Apply opacity
+
+                if (element.type === "image") {
+                    const imgWidth = element.img.width * (element.scale / 100);
+                    const imgHeight = element.img.height * (element.scale / 100);
+      // Calculate 3D effect value
+
+const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+const xPos = element.x-centerX;
+const yPos = element.y-centerY;
+      const scaleX = Math.cos((element.angle*4)*(Math.PI/90)); // Horizontal compression based on rotation
+      const skewY = Math.sin((element.angle*4)*(Math.PI/90))*0.25; // Skew for depth 
+      //
+      // Apply transformations
+      ctx.setTransform(
+        scaleX,       // Scale X
+        skewY,        // Skew Y
+        0,            // Skew X
+        1,            // Scale Y
+        centerX+xPos,      // Translate X
+        centerY+yPos    // Translate Y
+      );
+ctx.rotate((element.rotation * Math.PI) / 180);
+                    ctx.drawImage(element.img, -imgWidth/2, -imgHeight/2, imgWidth, imgHeight);
+                    //ctx.strokeStyle = "#ffffff"; // Outline color
+                   // ctx.lineWidth = 10;
+                    //ctx.strokeRect(-imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
+                      } else if (element.type === "text") {
+                    ctx.font = `${element.scale}px Arial`;
+                    ctx.fillStyle = element.color;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(element.text, 0, 0);  // Centered text
+                }
+
+                ctx.restore();
+            });
+        }
+function closeEditor(){
+            document.getElementById("coordinateInputs").style.display = "none";
+      }
+
+        // Select an element for editing
+        function selectElement(index) {
+    selectedElementIndex = index;
+    const element = elements[index];
+
+    document.getElementById("coordinateInputs").style.display = "block";
+    xPosInput.value = (element.x / canvas.width) * 100;
+    yPosInput.value = (element.y / canvas.height) * 100;
+    scaleInput.value = element.scale;
+    rotationInput.value = element.rotation;
+    opacitySlider.value = element.opacity;
+angleInput.value = element.angle;
+
+    if (element.type === "text") {
+        hexInput.style.display = "initial";
+        txtValueInput.style.display = "initial";
+angleInput.style.display = "none";
+angleInputLabel.style.display = "none";
+        txtValueLabel.style.display = "initial";
+txtHexLabel.style.display = "initial";
+        removeBgBtn.style.display = "none";
+        hexInput.value = element.color;
+        txtValueInput.value = element.text; // Show current text
+    } else if (element.type === "image") {
+        hexInput.style.display = "none";
+angleInput.style.display = "initial";
+angleInputLabel.style.display = "initial";
+        txtValueInput.style.display = "none";
+txtHexLabel.style.display = "none";
+        txtValueLabel.style.display = "none";
+        removeBgBtn.style.display = "initial";
+    }
+}
+
+        // Delete an element
+        function deleteElement(index) {
+            elements.splice(index, 1);
+            updateImageList();
+closeEditor();
+updateImageList();
+            drawCanvas();
+        }
+
+        // Update element position based on coordinate inputs
+        function updateElementPosition() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.x = (xPosInput.value / 100) * canvas.width;
+            element.y = (yPosInput.value / 100) * canvas.height;
+updateImageList();
+            drawCanvas();
+        }
+
+        // Update element scale
+        function updateElementScale() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.scale = scaleInput.value;
+updateImageList();
+            drawCanvas();
+        }
+function updateElementAngle() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.angle = angleInput.value;
+updateImageList();
+            drawCanvas();
+        }
+function updateElementColor() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            if (element.type === "text") {
+if(hexInput.value.length == 4 || hexInput.value.length == 7){
+                element.color = hexInput.value;
+}
+        updateImageList();
+                drawCanvas();
+            }
+        }
+
+function resizeCanvas(){
+
+if(heightInput.value > 5000){
+heightInput.value = 5000;
+}
+if(widthInput.value > 5000){
+widthInput.value = 5000;
+}
+if(heightInput.value.length > 0){
+canvas.height = heightInput.value;
+}
+if(widthInput.value.length > 0){
+canvas.width = widthInput.value;
+}
+updateImageList();
+                drawCanvas();
+        }
+function renameCanvas(){
+nameInput.value = nameInput.value.replace(/\..*/, "");
+}
+
+        // Update element rotation
+        function updateElementRotation() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.rotation = rotationInput.value;
+updateImageList();
+            drawCanvas();
+        }
+
+        // Update opacity when the slider is moved
+        function updateElementOpacity() {
+            if (selectedElementIndex === null) return;
+            const element = elements[selectedElementIndex];
+            element.opacity = opacitySlider.value;
+updateImageList();
+            drawCanvas();
+        }
+
+        // Update text color
+
+        // Clear all elements from the canvas
+        function clearAllElements() {
+    const confirmDelete = confirm("Are you sure you want to delete all elements?");
+    if (confirmDelete) {
+        elements = [];
+closeEditor();
+        updateImageList();
+        drawCanvas();
+    }
+}
+async function shareCanvas(name) {
+  const canvasElement = document.getElementById('editorCanvas');
+  const idataUrl = canvasElement.toDataURL();
+  const blob = await (await fetch(idataUrl)).blob();
+  const filesArray = [
+    new File(
+      [blob],
+      name,
+      {
+        type: blob.type,
+        lastModified: new Date().getTime()
+      }
+    )
+  ];
+  const shareData = {
+    files: filesArray,
+  };
+  navigator.share(shareData);
+}
+        // Export canvas as image
+        function exportCanvas() {
+            const dataUrl = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.href = dataUrl;
+            link.download = `${nameInput.value}.png`;
+            link.click();
+}
+function shareCanvasImage(){
+const dataUrl = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.href = dataUrl;
+            link.download = `${"CTRpixAI"}.png`;
+shareCanvas(link.download);
+}
+     </script>
+</html>
